@@ -1,4 +1,6 @@
-FROM openjdk:13-jdk-alpine
+FROM alpine:3.9
+
+RUN apk add --no-cache openjdk8-jre
 
 ENV DAEMON_RUN=true
 ENV SPARK_VERSION=2.4.3
@@ -27,4 +29,7 @@ RUN wget --no-verbose http://apache.mirror.iphh.net/spark/spark-${SPARK_VERSION}
       && mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} spark \
       && rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 
-RUN ln -s /usr/bin/python3 /usr/bin/python
+ENV PYSPARK_PYTHON=/usr/bin/python3
+RUN apk add g++ python3-dev
+RUN pip3 install minio pandas
+
