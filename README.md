@@ -27,7 +27,7 @@ The following steps will make you run your spark cluster's containers.
 
 ## Build the images
 
-The first step to deploy the cluster will be the build of the custom images, these builds can be performed with the *build-images.sh* script. 
+The first step to deploy the cluster will be the build of the custom images, these builds can be performed with the *build-images.sh* script.
 
 The executions is as simple as the following steps:
 
@@ -82,7 +82,7 @@ http://10.5.0.5:8081/
 
 ![alt text](docs/spark-worker-3.png "Spark worker 3 UI")
 
-# Resource Allocation 
+# Resource Allocation
 
 This cluster is shipped with three workers and one spark master, each of these has a particular set of resource allocation(basically RAM & cpu cores allocation).
 
@@ -216,3 +216,21 @@ Running Spark using the REST application submission protocol.
 * Right now I don't have enough resources to make a Yarn, Mesos or Kubernetes based cluster :(.
 
 * This will be useful to use CI/CD pipelines for your spark apps(A really difficult and hot topic)
+
+# Bug trouvés
+
+C'est un python 3.5.2 inclus dans l'image de base. Si on prend une plus récente, on a un pb de compatibilité: spark veut du java 8.
+
+Sinon on se trouve avec des erreurs:
+```
+  File "/spark/python/lib/pyspark.zip/pyspark/sql/dataframe.py", line 2142, in toPandas
+  File "/spark/python/lib/pyspark.zip/pyspark/sql/dataframe.py", line 533, in collect
+  File "/spark/python/lib/py4j-0.10.7-src.zip/py4j/java_gateway.py", line 1257, in __call__
+  File "/spark/python/lib/pyspark.zip/pyspark/sql/utils.py", line 79, in deco
+pyspark.sql.utils.IllegalArgumentException: 'Unsupported class file major version 57'
+```
+---
+Ajouter une variable d'environnement PYSPARK_PYTHON=/usr/bin/python3 sinon pyspark chercher un exe "python".
+
+---
+Installer les paquets pythons requis à la fin du Dockerfile
